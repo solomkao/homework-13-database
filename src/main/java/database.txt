@@ -1,0 +1,108 @@
+create table airport(
+   id serial primary key ,
+   name varchar not null unique ,
+   code varchar (3) not null unique
+);
+
+create table plane(
+    id serial primary key,
+    model varchar not null,
+    serial_number integer not null unique,
+    seats integer not null
+);
+
+alter table plane add column airportId integer references airport(id);
+
+create table pilots(
+    id serial primary key ,
+    name varchar not null unique,
+    age integer not null CHECK (age > 25),
+);
+
+alter table pilots add column airportId integer references airport(id);
+
+create table  planes_pilots(
+     id serial primary key,
+     pilot integer references pilots(id),
+     plane integer references plane(id),
+     unique (pilot, plane)
+);
+
+insert into airport (name, code) VALUES ('Brisbane Airport','BNE')
+
+insert into plane(model, serial_number, seats) VALUES ('Boeing 737 MAX 8',80123654,186);
+insert into plane(model, serial_number, seats) VALUES ('Boeing 747-400',6879453,660);
+insert into plane(model, serial_number, seats) VALUES ('Airbus A320',3876458,186);
+
+insert into pilots(name, age) values ('Oksana Solomka', 32);
+insert into pilots(name, age) values ('Ivan Sergienko', 41);
+insert into planes_pilots(pilot, plane) VALUES (1,1);
+insert into planes_pilots(pilot, plane) VALUES (2,1);
+insert into planes_pilots(pilot, plane) VALUES (2,3);
+
+UPDATE pilots SET airportid = 1 WHERE id = 2;
+UPDATE public.plane SET airportid = 1 WHERE id = 10;
+
+SELECT t.name, p.model
+FROM pilots t, planes_pilots pp, plane p
+WHERE t.id = pp.pilot AND p.id = pp.plane
+
+SELECT *
+FROM pilots t, planes_pilots pp, plane p
+WHERE t.id = pp.pilot AND p.id = pp.plane
+
+select * from airport, pilots, plane
+where pilots.airportid = airport.id and plane.airportid= plane.airportid
+
+SELECT count(pilots.id)
+FROM airport, pilots, planes_pilots, plane
+WHERE airport.code = 'BNE' and
+      pilots.airportid = airport.id
+  AND public.plane.airportid = airport.id
+AND planes_pilots.plane = plane.id
+AND planes_pilots.pilot = pilots.id
+and public.plane.model = 'Boeing 747'
+
+SELECT count(pilots.id)
+FROM airport, pilots, planes_pilots, plane
+WHERE airport.code = 'BNE' and
+      pilots.airportid = airport.id
+  AND public.plane.airportid = airport.id
+AND planes_pilots.plane = plane.id
+AND planes_pilots.pilot = pilots.id
+and public.plane.model = 'Airbus A320'
+
+SELECT plane.seats
+               FROM airport, plane
+               WHERE airport.code = 'BNE'
+                 AND plane.airportid = airport.id
+                 and plane.model = 'Boeing 747'
+
+SELECT DISTINCT plane.model
+FROM airport, plane
+WHERE airport.code = 'BNE'
+AND plane.airportid = airport.id
+
+SELECT DISTINCT pilots.name
+FROM airport, plane, pilots
+WHERE airport.code = 'BNE'
+AND plane.airportid = airport.id
+AND pilots.airportid = airport.id
+
+SELECT pilots.name, plane.model
+FROM airport, plane, pilots, planes_pilots
+WHERE airport.code = 'BNE'
+AND plane.airportid = airport.id
+AND pilots.airportid = airport.id
+AND planes_pilots.pilot = pilots.id
+AND planes_pilots.plane = public.plane.id
+
+
+SELECT pilots.name, plane.model
+FROM airport, plane, pilots, planes_pilots
+WHERE airport.code = 'BNE'
+AND plane.airportid = airport.id
+AND pilots.airportid = airport.id
+AND planes_pilots.pilot = pilots.id
+AND planes_pilots.plane = public.plane.id
+AND plane.model = 'Boeing 747'
