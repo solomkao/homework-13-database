@@ -1,4 +1,4 @@
-reate table airport(
+create table airport(
    id serial primary key ,
    name varchar not null unique ,
    code varchar (3) not null unique
