@@ -4,7 +4,7 @@ import java.util.*;
 public class DataSource {
     private static final String URL = "jdbc:postgresql://localhost/postgres";
     private static final String USER = "postgres";
-    private static final String PASSWORD = "48994899";
+    private static final String PASSWORD = "123456";
     private static Connection connection;
     private static PreparedStatement preparedStatement;
     private static final String SELECT_PLANES = "SELECT DISTINCT plane.model, plane.seats\n" +
